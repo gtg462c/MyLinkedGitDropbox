@@ -1,0 +1,317 @@
+\documentclass[12pt]{article}
+%\usepackage{lslide}
+\usepackage{epsfig}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\beqa}{\begin{eqnarray}}
+\newcommand{\eeqa}{\end{eqnarray}}
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+%\newcommand{\IP}{\{}^P \[ I_{P/Cp}\]}
+\pagenumbering{Roman}
+\setlength{\textheight}{23cm}
+\setlength{\textwidth}{16cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setlength{\topmargin}{0.5cm}
+\setlength{\topskip}{0cm}
+\setlength{\footskip}{1cm}
+
+% ----------------------------------------------------------------------
+\title{SPACECRAFT ATTITUDE CONTROL AND POWER TRACKING WITH SINGLE-GIMBALED
+VSCMGs}
+\author{ Hyungjoo Yoon \\ School of Aerospace Engineering\\ Georgia Institute of
+Technology}
+% ----------------------------------------------------------------------
+\begin{document}
+%%% ----------------------------------------------------------------------
+\maketitle
+
+\section{Introduction}
+This report is a summary of the recent research on
+spacecraft attitude control and power tracking with
+single-gimbaled variable-speed control moment gyroscopes(VSCMGs).
+I mainly did this research on the bases of some previous
+literatures of Schaub {\it et.al.}\cite{schaub1}\cite{schaub2}, Ford {\it et.al}\cite{ford1}\cite{ford2}, and Tsiotras {\it et.al.}\cite{tsiotras1}.
+
+\section{Equation of Motion}
+
+\begin{figure}[h]
+\centering
+\epsfig{file=vscmg01.eps,width=10cm}
+\caption{Spacecraft Body with a VSCMG}
+\label{fig01}
+\end{figure}
+
+Figure \ref{fig01} is a spacecraft body with a VSCMG. A body(B)
+consists of a platform(P) and multiple CMGs(C). Each of CMGs is
+composed of a gimbal structure(G) and a momentum wheel(W).
+When $\gamma$ is a column vector of each gimbal angles and $\Omega$ is
+of angular speed of each momentum wheels, the angular momentum of whole S/C body including the platform and CMGs
+can be expressed in B-frame as
+\beq
+h = J \omega + A_g [I_{cg}]\dot{\gamma} +
+A_s [I_{ws}]\Omega
+\eeq
+where,
+\beq
+J(\gamma) = {}^B [I] + A_s [I_{cs}]A_s^T + A_t [I_{ct}]A_t^T + A_g [I_{cg}]A_g^T
+\eeq
+and
+${}^B[I]$ is a matrix of inertia of a platform and point-mass
+CMGs. $A_s$ is the matrix defined as
+\beq
+A_s = \left[ \hat{e}_{s1},\cdots ,\hat{e}_{sN} \right]
+\eeq
+and $A_t$ and $A_g$ are also defined in similar way.
+
+In addition, $[I_{cs}]$,$[I_{ct}]$ and $[I_{cg}]$ are diagonal
+matrices whose elements are moments of inertia of N-CMGs(gimbal structure and wheel) along
+each axis, while $[I_{ws}]$ is a diagonal matrix whose elements
+are the spin-axis moments of inertia of wheels only.
+
+If $h_c$ is defined as $A_g [I_{cg}]\dot{\gamma} +
+A_s [I_{ws}]\Omega$, then the time derivative of $h$ with respect to
+B-frame is
+\beqa
+\dot{h} &=& \dot{J}\omega + J \dot{\omega} + \dot{h}_c \label{eq01} \\
+&=& h \times \omega + g_e \label{eq02}
+\eeqa
+where, $g_e$ is a external torque.
+
+Since,
+\[ \dot{A}_s = A_t [diag(\dot{\gamma})], \dot{A}_t = - A_s
+[diag(\dot{\gamma})]\] the time derivatives of $J$ and $h_c$ in
+Eq.(\ref{eq01}) are \beqa \dot{h}_c &=& A_g [I_{cg}]\ddot{\gamma}
++ \dot{A}_s [I_{ws}]\Omega + A_s [I_{ws}]\dot{\Omega} \\ &=&A_g
+[I_{cg}]\ddot{\gamma} + A_t [diag(\dot{\gamma})] [I_{ws}]\Omega +
+A_s [I_{ws}]\dot{\Omega} \eeqa and \cite{ford1} \beq \dot{J} = A_t
+[diag(\dot{\gamma})]([I_{cs}]-[I_{ct}])A_s^T + A_s
+[diag(\dot{\gamma})]([I_{cs}]-[I_{ct}])A_t^T \eeq
+
+\section{Lyapunov Feedback Control Law}
+
+Suppose a Lyapunov function is defined as \cite{tsiotras1}
+\beq V
+= \frac{1}{2} (\omega - \omega_r)^T J (\omega - \omega_r) + 2 k_0
+\ln{ ( 1 + \sigma^T_e \sigma_e ) }\eeq
+where, $k_0$ is a positive
+scalar constant, $\omega_r$ is a reference (target) body rate
+written in B-frame, and $\sigma_e$ is the error Modified Rodrigues
+Parameters(MRP) vector between the reference frame and the
+B-frame; i.e., \beq [R^B_R (\sigma_e )] =[R^B_N (\sigma)] [R^R_N
+(\sigma_r )]^T \eeq The kinematics equation of the error MRP is
+\beq \dot{\sigma_e} = G(\sigma_e ) (\omega -\omega_r ) \eeq where,
+\beq G(\sigma_e ) = \frac{1}{2} \left( I_3 + [\sigma_e \times ] +
+\sigma_e \sigma_e^T - \frac{1+\sigma_e^T \sigma_e}{2} I_3 \right)
+\eeq
+
+Them, the time derivative of this positive definite function $V$
+is
+\beqa
+\dot{V} &=& \frac{1}{2} (\omega - \omega_r)^T \dot{J} (\omega - \omega_r)
++ (\omega - \omega_r)^T J (\dot{\omega} - \dot{\omega}_r)
++ 2 k_o \frac{2 \sigma_e^T \dot{\sigma}_e}{1 + \sigma^T_e
+\sigma_e}\\
+&=& -(\omega-\omega_r )^T \left\{ -\frac{1}{2} \dot{J} (\omega-\omega_r
+)- J(\dot{\omega} - \dot{\omega}_r) - k_0 \sigma_e \right\}
+\eeqa
+For Lyapunov stability,
+\beq
+-\frac{1}{2} \dot{J} (\omega-\omega_r
+)- J(\dot{\omega} - \dot{\omega}_r) - k_0 \sigma_e = k_1
+(\omega-\omega_r )
+\eeq
+where, $k_1$ is a 3$\times$3 positive definite matrix.
+From Eq.(\ref{eq01}) and (\ref{eq02}), the sufficient condition for the Lyapunov stability is
+\beq
+\dot{h}_c + \frac{1}{2} \dot{J} (\omega+\omega_r ) = k_1 (\omega-\omega_r )
++ k_0 \sigma_e - J \dot{\omega}_r + h \times \omega + g_e
+\eeq
+If the right side of this equation is defined as a required control torque $L_r$, this
+condition can be expressed in a very compact form as follow;
+\beq
+B \ddot{\gamma} + C\dot{\gamma} + D\dot{\Omega} = L_r \label{eq03}
+\eeq
+where \cite{ford2},
+\beqa
+B &=& A_g [ I_{cq} ] \\
+D &=& A_s [ I_{ws} ] \\
+C &=& A_t [ I_{ws} ][diag(\Omega)] \\ &+& \frac{1}{2}
+[(\hat{e}_{s1}\hat{e}_{t1}^T +
+\hat{e}_{t1}\hat{e}_{s1}^T)(\omega+\omega_r ) , \cdots ,(\hat{e}_{sN}\hat{e}_{tN}^T +
+\hat{e}_{tN}\hat{e}_{sN}^T)(\omega+\omega_r )]
+([I_{cs}]-[I_{ct}])
+\eeqa
+
+\section{Steering Law for Attitude and Power Tracking}
+\subsection{Velocity based steering law}
+For the advantage of the torque amplification effect of CMGs,
+most of the required control torque vector $L_r$ should be
+produced by the $D\dot{\gamma}$ term. So, if gimbal acceleration
+term $B \ddot{\gamma}$ is ignored in this level, the stability
+condition becomes
+\beq
+Q\dot{\eta} = L_r \label{eq04}
+\eeq
+where,
+\beq
+Q = [ C \vdots D ] , \; \; \dot{\eta} = \left\{ \begin{array}{c}
+\dot{\gamma} \\ \dot{\Omega} \end{array} \right\}
+\eeq
+Eq.(\ref{eq04}) is underdetermined equation, so there exist
+infinitely many solutions of $\dot{\eta}$.
+One of the solutions is the minimum norm solution; i.e.,
+\beq
+\dot{\eta} = Q^T ( Q Q^T )^{-1} L_r
+\eeq
+However, because ideally the VSCMGs are to act like classical CMGs
+away from single-gimbal CMG singular configurations, a weighted
+pseudo inverse can be used instead. Then, the desired $\dot{\eta}$
+is \cite{schaub1}
+\beq
+\dot{\eta} = WQ^T(QWQ^T)^{-1} L_r
+\eeq
+
+\subsection{Power tracking}
+
+The general solution of $\dot{\eta}$ in Eq.(\ref{eq04}) is given by
+\beq
+\dot{\eta} = WQ^T(QWQ^T)^{-1} L_r + \dot{\eta}_n
+\eeq
+where $\dot{\eta}_n$ is on the null space of $Q$; i.e.,
+\beq
+Q \dot{\eta}_n = 0
+\eeq
+
+The total kinetic energy stored in the momentum wheels is
+\beq
+T = \frac{1}{2} \Omega^T [I_{ws}] \Omega
+\eeq
+So the power is given by
+\beqa
+P &=& \frac{dT}{dt} = \Omega^T [I_{ws} \;] \dot{\Omega} \\
+&=& \left[\; 0 \; \vdots \; \Omega^T [I_{ws}] \;\right] \left\{ \begin{array}{c}
+\dot{\gamma} \\ \dot{\Omega} \end{array} \right\} \\
+&=& \left[\; 0 \; \vdots \; \Omega^T [I_{ws}] \;\right]WQ^T(QWQ^T)^{-1} L_r
++\left[\; 0 \; \vdots \; \Omega^T [I_{ws}] \;\right] \left\{ \begin{array}{c}
+\dot{\gamma}_n \\ \dot{\Omega}_n \end{array} \right\}
+\eeqa
+Therefore,
+\beq
+\left[\; 0 \; \vdots \; \Omega^T [I_{ws}] \;\right] \left\{ \begin{array}{c}
+\dot{\gamma}_n \\ \dot{\Omega}_n \end{array} \right\} = P -\left[\; 0 \; \vdots \; \Omega^T [I_{ws}] \;\right]WQ^T(QWQ^T)^{-1}
+L_r = P_m
+\eeq
+where $P_m$ is the modified power.
+
+Since $\dot{\eta}_n \in \mathcal{N}(Q)$, there exists a vector
+$\nu \in \Re^{2N}$ such that \cite{tsiotras1}
+\beq
+\dot{\eta}_n = \mathcal{P}_N \nu
+\eeq
+where $\mathcal{P}_N = I_{2N} - Q^T(QQ^T)^{-1} Q $ is the
+orthogonal projection on $\mathcal{N}(Q)$.
+Thus we have
+\beq
+\left[\; 0 \; \vdots \; \Omega^T [I_{ws}] \;\right]\mathcal{P}_N
+\nu = P_m
+\eeq
+and the minimum norm solution of this equation is
+\beq
+\nu =\mathcal{P}_N \left\{
+\begin{array}{c} 0 \\ \left[I_{ws}\right] \Omega
+\end{array} \right\}
+\left(\left[\; 0 \; \vdots \; \Omega^T [I_{ws}]
+\;\right]\mathcal{P}_N \left\{ \begin{array}{c} 0 \\\left[I_{ws}\right] \Omega
+\end{array} \right\} \right)^{-1} P_m
+\eeq
+Therefore the angular velocity input for power tracking can be
+chosen as
+\beq
+\dot{\eta}_n =\mathcal{P}_N \nu =\mathcal{P}_N \left\{
+\begin{array}{c} 0 \\ \left[I_{ws}\right] \Omega
+\end{array} \right\}
+\left(\left[\; 0 \; \vdots \; \Omega^T [I_{ws}]
+\;\right]\mathcal{P}_N \left\{ \begin{array}{c} 0 \\\left[I_{ws}\right] \Omega
+\end{array} \right\} \right)^{-1} P_m
+\eeq
+and the combined angular velocity input for attitude and power tracking is
+\beq
+\dot{\eta}_d = WQ^T(QWQ^T)^{-1} L_r + \dot{\eta}_n \label{eq05}
+\eeq
+
+\subsection{Acceleration based steering law}
+
+For more accurate control and realistic simulation, the gimbal
+acceleration term in Eq.(\ref{eq03}) should be used as the actual
+control input.
+The goal of gimbal acceleration based steering law is to calculate the gimbal acceleration
+input which makes the real gimbal rate converge to the desired
+gimbal rate provided in Eq.(\ref{eq05}).
+
+If a Lyapunov function is defined as
+\beq
+V_2 = \frac{1}{2} (\dot{\gamma}_d - \dot{\gamma} )^T (\dot{\gamma}_d - \dot{\gamma} )
+\eeq
+then,
+\beq
+\dot{V_2} = (\dot{\gamma}_d - \dot{\gamma} )^T (\ddot{\gamma}_d - \ddot{\gamma} )
+\eeq
+So the stability condition becomes
+\beq
+\ddot{\gamma} = k_2 (\dot{\gamma_d} - \dot{\gamma} ) +
+\ddot{\gamma_d }
+\eeq
+where, $k_2$ is a N$\times$N positive definite matrix.
+Usually, $\ddot{\gamma_d }$ can be assumed to be small and is
+neglected. \cite{schaub1}
+
+Finally, the acceleration based steering law is derived as
+\beq
+\left\{ \begin{array}{c} \ddot{\gamma} \\ \dot{\Omega} \end{array} \right\}
+= \left[ \begin{array}{cc} k_2 & 0 \\  0 & I_N \end{array}
+\right]
+\left( \dot{\eta}_d - \left\{ \begin{array}{c} \dot{\gamma} \\ 0
+\end{array} \right\} \right)
+\eeq
+
+\section{Further Research Plan}
+
+Most of all, I want to finish the simulation program code using
+the Matlab. For this purpose, I also need a reasonable and
+realistic simulation scenario, so I will read the simulation part of Haijun's paper.
+Dave Richie is also trying to compose the simulation program using
+Simulink, so we will coordinate with each other in this problem.
+
+I also have to think over the dynamics of reference (target)
+frame in deriving the stability condition and the weighting matrix
+for the power tracking problem.
+
+And then, I will apply this results to the actuator failure
+problem, i.e., some of gimbals are fallen into the gimbal-lock or
+some of CMGs are out of order. In the conventional reaction wheel
+cases, it is possible to stabilize the attitude using only two
+reaction wheel, (though it is not a continuous feedback control,)
+thus I will examine a possibility of the stabilization with only
+two degree of freedom.
+
+\begin{thebibliography}{99}
+\bibitem{schaub1} Schaub,H., Vadali,S.R., and Junkins,J.L.,``Feedback Control Law for Variable Speed Control Moment
+Gyroscopes," {\it Journal of the Astronautical Sciences,} Vol.
+46, No.3, 1998, pp.307-328.
+\bibitem{schaub2} Schaub,H. and Junkins,J.L.,``Singularity
+Avoidance Using Null Motion and Variable-Speed Control Moment
+Gyros," {\it Journal of Guidance, Control, and Dynamics,}
+Vol.23, No.1, 2000, pp.11-16.
+\bibitem{ford1} Ford,K.A. and Hall,C.D.,``Flexible Spacecraft
+Reorientations Using Gimbaled Momentum Wheels," {\it Advances in
+the Astronautical Sciences, Astrodynamics 1997}, edited by F.
+Hoots, B.Kaufman, P.J.Cefola, and D.B.Spencer, Vol.97, Univelt,
+San Diego, 1997, pp.1895-1914.
+\bibitem{ford2} Ford,K.A. and Hall,C.D.,``Singular Direction Avoidance Steering for Control-Moment
+Gyros," {\it Journal of Guidance, Control, and Dynamics,} Vol.23, No. 4, 2000, pp.648-656.
+\bibitem{tsiotras1} Tsiotras,P., Shen,H. and Hall,C.,``Satellite Attitude Control and Power Tracking with Momentum Wheels," {\it Journal of Guidance, Control, and
+Dynamics} (to appear).
+\end{thebibliography}
+\end{document}

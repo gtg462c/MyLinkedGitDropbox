@@ -1,0 +1,44 @@
+This is TeX, Version 3.14159 (MiKTeX 1.11) (preloaded format=latex 98.9.10)  23 JAN 2001 12:58
+**&latex q.tex
+(q.tex
+LaTeX2e <1998/06/01>
+Babel <v3.6j> and hyphenation patterns for english, german, loaded.
+! You can't use `\spacefactor' in vertical mode.
+\@->\spacefactor 
+                 \@m 
+l.12 \@
+       writefile{toc}{\contentsline {section}{\numberline {1}Introduc...
+? q
+OK, entering \batchmode...
+! Missing $ inserted.
+<inserted text> 
+                $
+l.12 \@
+       writefile{toc}{\contentsline {section}{\numberline {1}Introduc...
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                      
+                                          
+l.12 \@
+       writefile{toc}{\contentsline {section}{\numberline {1}Introduc...
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 12.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 12.
+Missing character: There is no 1 in font nullfont!
+)
+! Emergency stop.
+<*> &latex q.tex
+                
+*** (job aborted, no legal \end found)
+
+No pages of output.
